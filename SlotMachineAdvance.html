@@ -1,0 +1,195 @@
+<style>
+<!--
+.shakeimage1{position:relative}
+.shakeimage2{position:relative}
+.shakeimage3{position:relative}
+-->	
+</style>
+<script language="JavaScript">
+var setoff = 40	//圖案一次位移多少px
+var picHight = 240;
+var onePicMaxSetoffTimes = picHight / setoff;	//6
+
+var picAmount = 5;
+var oneRoundPicsSetoffTimes = onePicMaxSetoffTimes * picAmount;
+
+var delay1=30, delay2=20, delay3=25 //每次位移的時間間格
+var count1=0, count2=0, count3=0	//計算位移次數
+
+var startGame = false;	//test is running now?
+var isFinishSlot1=false, isFinishSlot2=false, isFinishSlot3=false
+
+function init(){
+	count1=0; 
+	count2=0; 
+	count3=0;
+	
+	isFinishSlot1 = false;
+	isFinishSlot2 = false;
+	isFinishSlot3 = false;
+	
+	delay1 = Math.floor(15 + Math.random()*10*3);
+	delay2 = Math.floor(15 + Math.random()*10*3);
+	delay3 = Math.floor(15 + Math.random()*10*3);
+	
+	document.getElementById("shakeimage1").style.top = 0;
+	document.getElementById("shakeimage1").style.left = 0;
+	
+	document.getElementById("shakeimage2").style.top = 0;
+	document.getElementById("shakeimage2").style.left = 0;
+	
+	document.getElementById("shakeimage3").style.top = 0;
+	document.getElementById("shakeimage3").style.left = 0;
+}
+
+function runGame() {
+	if(startGame == false) {
+		startGame = true;
+		runSlot1();
+		runSlot2();
+		runSlot3();
+	}
+}
+
+function runSlot1(){
+	if ( startGame == false )
+	{
+		for(count = (count1 % onePicMaxSetoffTimes ); count < onePicMaxSetoffTimes; count++)
+		{
+			if (count == 0)
+				break;
+
+			slot1 = document.getElementById("shakeimage1");
+			slot1.style.top = parseInt(slot1.style.top)-setoff;
+			setTimeout(delay1)
+		}
+		isFinishSlot1 = true;
+		testEndGame();
+		return
+	}
+		
+	slot1 = document.getElementById("shakeimage1");
+	slot1.style.top = parseInt(slot1.style.top)-setoff;
+	setTimeout("runSlot1()",delay1)
+
+	if (count1 < oneRoundPicsSetoffTimes)
+		count1++
+	else {
+		count1 = 0
+		slot1.style.left=0
+		slot1.style.top=0
+	}
+}
+
+function runSlot2(){
+	if ( startGame == false )
+	{
+		for(count = (count2 % onePicMaxSetoffTimes); count < onePicMaxSetoffTimes; count++)
+		{
+			if (count == 0)
+				break;
+
+			slot2 = document.getElementById("shakeimage2");
+			slot2.style.top = parseInt(slot2.style.top)-setoff;
+			setTimeout(delay2)
+		}
+		isFinishSlot2 = true;
+		testEndGame();
+		return
+	}
+		
+	slot2 = document.getElementById("shakeimage2");
+	slot2.style.top = parseInt(slot2.style.top)-setoff;
+	setTimeout("runSlot2()",delay2)
+
+	if (count2 < oneRoundPicsSetoffTimes)
+		count2++
+	else {
+		count2 = 0
+		slot2.style.left=0
+		slot2.style.top=0
+	}
+}
+
+function runSlot3(){
+	if ( startGame == false )
+	{
+		for(count = (count3 % onePicMaxSetoffTimes); count < onePicMaxSetoffTimes; count++)
+		{
+			if (count == 0)
+				break;
+
+			slot3 = document.getElementById("shakeimage3");
+			slot3.style.top = parseInt(slot3.style.top)-setoff;
+			setTimeout(delay3)
+		}
+		isFinishSlot3 = true;
+		testEndGame();
+		return
+	}
+		
+	slot3 = document.getElementById("shakeimage3");
+	slot3.style.top = parseInt(slot3.style.top)-setoff;
+	setTimeout("runSlot3()",delay3)
+
+	if (count3 < oneRoundPicsSetoffTimes)
+		count3++
+	else {
+		count3 = 0
+		slot3.style.left=0
+		slot3.style.top=0
+	}
+}
+
+function stopgame(){
+	startGame = false;
+}
+
+function testEndGame(){
+	if(isFinishSlot1 == true && isFinishSlot2 == true && isFinishSlot3 == true){
+		if( testInterval(count1) == testInterval(count2) && testInterval(count1) == testInterval(count3) ) {
+			confirm("恭喜您，中獎啦！")
+		}else{
+			confirm( "謝謝惠顧。")
+		}
+	}
+}	
+
+function testInterval(count){
+	var interval;
+	if ( count % onePicMaxSetoffTimes == 0 ){
+		interval = Math.floor( count / (onePicMaxSetoffTimes) );
+	} else {
+		interval = Math.floor( (count / onePicMaxSetoffTimes) ) + 1;
+	}
+	
+	if(interval == 0)	//因為0跟picAmount是同一張圖
+		return picAmount;
+	return interval;
+}
+</script>
+
+<CENTER>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR><TD>
+	<p align="center">
+	<div style="width:180px; height:240px; overflow:hidden; border:1px solid red;"> 
+	<img src="totalImage2.png" id="shakeimage1" class="shakeimage1">
+	</div></p></TD>
+<TD>
+	<p align="center">
+	<div style="width:180px; height:240px; overflow:hidden; border:1px solid red;"> 
+	<img src="totalImage2.png" id="shakeimage2" class="shakeimage2">
+	</div></p></TD>
+<TD>
+	<p align="center">
+	<div style="width:180px; height:240px; overflow:hidden; border:1px solid red;"> 
+	<img src="totalImage2.png" id="shakeimage3" class="shakeimage3">
+	</div></p></TD></TR>
+
+<TD COLSPAN="3" ALIGN="center">
+<INPUT TYPE="button" onClick="init(this); runGame()" VALUE="start">
+<INPUT TYPE="button" onClick="stopgame()" VALUE="all stop">
+</TD></TR>
+</TABLE>
+</CENTER> 

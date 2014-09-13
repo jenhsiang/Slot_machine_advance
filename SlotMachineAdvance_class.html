@@ -1,0 +1,140 @@
+<style>
+<!--
+.shakeimage1{position:relative}
+.shakeimage2{position:relative}
+.shakeimage3{position:relative}
+-->	
+</style>
+<script language="JavaScript">
+var offset = 40	//圖案一次位移多少px
+var picHight = 240;
+var onePicMaxOffsetTimes = picHight / offset;	//6
+
+var picAmount = 5;
+var oneRoundPicsOffsetTimes = onePicMaxOffsetTimes * picAmount;
+
+var startGame = false;	//test is running now?
+var slot1, slot2, slot3;
+
+function init(){
+	slot1 = new slot( document.getElementById("shakeimage1") );
+	slot2 = new slot( document.getElementById("shakeimage2") );
+	slot3 = new slot( document.getElementById("shakeimage3") );
+}
+
+function runGame() {
+	if(startGame == false) {
+		startGame = true;
+		slot1.runSlot();
+		slot2.runSlot();
+		slot3.runSlot();
+	}
+}
+
+function slot(shakeImageOjb) {
+	var count = 0;
+	var delayTime = Math.floor(15 + Math.random()*15*3);
+	var isFinishSlot = false;
+	
+	this.getCount = function() { return count; }
+	this.getIsFinishSlot = function() { return isFinishSlot; }
+	
+	var slotObj = shakeImageOjb;
+	slotObj.style.top = 0;	//設定圖片起始位置
+	slotObj.style.left = 0;	//設定圖片起始位置
+	
+	this.runSlot = runSlot;
+	function runSlot() {
+		//是否按下stop按鈕
+		if ( startGame == false )
+		{
+			for(i = (count % onePicMaxOffsetTimes ); i < onePicMaxOffsetTimes; i++)
+			{
+				if (i == 0)
+					break;
+				
+				slotObj.style.top = parseInt(slotObj.style.top) - offset;
+				setTimeout(delayTime);
+			}
+			isFinishSlot = true;
+			
+			testEndGame();
+			return
+		}
+
+		//每次將圖片向上位移的px
+		slotObj.style.top = parseInt(slotObj.style.top) - offset;
+		
+		//計算是否圖片跑完一圈 (一圈共有 picAmount 個圖片)
+		if (count < oneRoundPicsOffsetTimes) {
+			count++;
+		}
+		else {
+			count = 0
+			slotObj.style.left=0
+			slotObj.style.top=0
+		}
+		
+		setTimeout(runSlot, delayTime);
+	}
+}
+
+function stopgame(){
+	startGame = false;
+}
+
+function nullObj(){
+	setTimeout(1000);
+	slot1 = null;
+	slot2 = null;
+	slot3 = null;
+}
+
+function testEndGame(){
+	if(slot1.getIsFinishSlot() == true && slot2.getIsFinishSlot() == true && slot3.getIsFinishSlot() == true){
+		if( testInterval(slot1.getCount()) == testInterval(slot2.getCount()) && testInterval(slot1.getCount()) == testInterval(slot3.getCount()) ) {
+			confirm("恭喜您，中獎啦！")
+		}else{
+			confirm( "謝謝惠顧。")
+		}
+	}
+}	
+
+function testInterval(count){
+	var interval;
+	if ( count % onePicMaxOffsetTimes == 0 ){
+		interval = Math.floor( count / (onePicMaxOffsetTimes) );
+	} else {
+		interval = Math.floor( (count / onePicMaxOffsetTimes) ) + 1;
+	}
+	
+	if(interval == 0)	//因為0跟picAmount是同一張圖
+		return picAmount;
+	return interval;
+}
+</script>
+
+<CENTER>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR><TD>
+	<p align="center">
+	<div style="width:180px; height:240px; overflow:hidden; border:1px solid red;"> 
+	<img src="totalImage2.png" id="shakeimage1" class="shakeimage1">
+	</div></p></TD>
+<TD>
+	<p align="center">
+	<div style="width:180px; height:240px; overflow:hidden; border:1px solid red;"> 
+	<img src="totalImage2.png" id="shakeimage2" class="shakeimage2">
+	</div></p></TD>
+<TD>
+	<p align="center">
+	<div style="width:180px; height:240px; overflow:hidden; border:1px solid red;"> 
+	<img src="totalImage2.png" id="shakeimage3" class="shakeimage3">
+	</div></p></TD></TR>
+
+<TD COLSPAN="3" ALIGN="center">
+<INPUT TYPE="button" onClick="init(); runGame()" VALUE="start">
+<INPUT TYPE="button" onClick="stopgame();" VALUE="all stop">
+</TD></TR>
+</TABLE>
+</CENTER> 
